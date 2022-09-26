@@ -1,18 +1,56 @@
+//*=================================================
+//*              ASYNC-AWAIT
+//*=================================================
+//? Async-Await ECMAScript 2017 ile Javascript diline eklenmistir.
+//? Aslinda Promise yapisinin syntax olarak basitlestirilmis halidir.
+//? Bu baglamda sentetik seker benzetmesi yapilabilir.
+
+//* Bir fonskiyonu asenkron hale getirmek icin fonksiyon keyword'nun onune
+//* async keyword'u eklenir.
+
+//* Bir async fonksiyon icerisinde await keyword'u ile yapilan istegin cevabinin
+//* beklenmesi saglanir.
+
+//* Aslinda dizilis olarak senkron mantiga benzeyen kod yazarak Asenkron
+//* kod yazmayı mumkun kilar.
+
+//* Await, promise-temelli herhangi bir fonksiyonun onune getirilerek getirildigi
+//* satirdaki kodun durudurulmasini saglar. Yapilan istek yerine getirilip sonuc
+//* degerlerinin dondurulmesine ile kodun calismasi devam eder.
+
 const getNews = async function () {
-
-const API_KEY ="4e3c3bad27f143c6bc90f43c0d7d8a9d";
-const url ="https://newsapi.org/v2/top-headlines?country=tr&apiKey=" + API_KEY;
-
-try {
-    const res = await fetch(url);
-    if(!res.ok) {
-        throw new Eroor(`Something went wrong: ${res.status}`)
+    const apiKey = "8a4c426f938a4ee38266f2378b9247e7";
+    const url = `https://newsapi.org/v2/top-headlines?country=tr&apiKey=${apiKey}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`something went wrong ${res.status}`);
+      }
+      const data = await res.json();
+      // console.log(data.articles);
+      renderNews(data.articles);
+    } catch (error) {
+      console.log(error);
     }
-    const data = await res.json();
-    console.log(data.articles);
-} 
-catch (error) {
-    console.log(error);
-}   
-}
-getNews();
+  };
+  
+  const renderNews = (news) => {
+    const newsList = document.getElementById("news-list");
+    news.forEach((item) => {
+      console.log(item);
+      const { title, description, urlToImage, url } = item;
+      newsList.innerHTML += `
+    <div class="col-md-6 col-lg-4 col-xl-3">
+        <div class="card" style="width: 18rem;">
+            <img src="${urlToImage}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">${title}</h5>
+                <p class="card-text">${description}</p>
+                <a href="${url}" target="_blank" class="btn btn-primary">Details</a>
+            </div>
+        </div>
+    </div>`;
+    });
+  };
+  
+  window.addEventListener("load", getNews);
